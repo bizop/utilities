@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f2f2f2;
+        text-align: center;
+        padding: 20px;
+      }
+
+      h1 {
+        font-weight: normal;
+        color: #8f8f8f;
+      }
+
+      ul {
+        width: 500px;
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      li {
+        background-color: #fafafa;
+        list-style-type: none;
+        padding: 8px 12px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      input {
+        width: 500px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+      }
+
+      button {
+        background-color: #0095dd;
+        color: #fff;
+        padding: 8px 12px;
+        border: 1px solid #0095dd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My To-Do List</h1>
+    <ul id="list"></ul>
+    <input type="text" id="input" placeholder="Add a new item..." />
+    <button id="add" onclick="addItem();">Add</button>
+    <script>
+      function addItem() {
+        // Get the value of the input field
+        let item = document.getElementById('input').value;
+        // Check if the input is not empty
+        if (item) {
+          // Create a list item
+          let li = document.createElement('li');
+          li.innerHTML = item;
+          // Append the list item to the unordered list
+          document.getElementById('list').appendChild(li);
+          // Clear the input field
+          document.getElementById('input').value = '';
+          localStorage.setItem('list', document.getElementById('list').innerHTML);
+        }
+      }
+
+      // Get the list from local storage
+      document.getElementById('list').innerHTML = localStorage.getItem('list');
+    </script>
+  </body>
+</html>
