@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Text Editor</title>
+    <style>
+      #text-input {
+        font-family: Arial;
+        font-size: 16px;
+        width: 500px;
+        height: 300px;
+        border: 1px solid black;
+      }
+
+      button {
+        font-family: Arial;
+        font-size: 14px;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div contenteditable="true" id="text-input">Type your text here.</div>
+    <button id="bold-button">Bold</button>
+    <button id="italic-button">Italic</button>
+    <button id="underline-button">Underline</button>
+    <button id="undo-button">Undo</button>
+    <button id="redo-button">Redo</button>
+    <script>
+      const textInput = document.getElementById('text-input');
+      const boldButton = document.getElementById('bold-button');
+      const italicButton = document.getElementById('italic-button');
+      const underlineButton = document.getElementById('underline-button');
+      const undoButton = document.getElementById('undo-button');
+      const redoButton = document.getElementById('redo-button');
+
+      boldButton.addEventListener('click', () => {
+        document.execCommand('bold');
+      });
+
+      italicButton.addEventListener('click', () => {
+        document.execCommand('italic');
+      });
+
+      underlineButton.addEventListener('click', () => {
+        document.execCommand('underline');
+      });
+
+      undoButton.addEventListener('click', () => {
+        document.execCommand('undo');
+      });
+
+      redoButton.addEventListener('click', () => {
+        document.execCommand('redo');
+      });
+    </script>
+  </body>
+</html>
