@@ -52,6 +52,12 @@
       redoButton.addEventListener('click', () => {
         document.execCommand('redo');
       });
+
+      textInput.addEventListener('keydown', (event) => {
+        if (event.key === '/') {
+          console.log('command bar');
+        }
+      });
     </script>
   </body>
 </html>
