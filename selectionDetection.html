@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Selection Detection</title>
+    <style>
+      .tooltip {
+        position: absolute;
+        background-color: #eee;
+        border: 1px solid #333;
+        padding: 5px;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Selection Detection</h1>
+    <p>Try selecting some text on this page and see what happens.</p>
+    <div id="tooltip" class="tooltip" style="display: none"></div>
+    <script>
+      function detectSelection() {
+        document.addEventListener('pointerup', function () {
+          let selection = window.getSelection().toString();
+          if (selection.length > 0) {
+            let range = window.getSelection().getRangeAt(0);
+            let rect = range.getBoundingClientRect();
+            let tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = selection;
+            tooltip.style.top = `${rect.top - 5}px`;
+            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+            tooltip.style.display = 'block';
+          }
+        });
+      }
+
+      document.addEventListener('selectionchange', detectSelection);
+    </script>
+  </body>
+</html>
