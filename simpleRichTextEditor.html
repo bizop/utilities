@@ -1,63 +1,223 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Text Editor</title>
+    <title>Word Editor</title>
     <style>
-      #text-input {
-        font-family: Arial;
-        font-size: 16px;
-        width: 500px;
-        height: 300px;
-        border: 1px solid black;
+      /* Add fontawesome for icon styles */
+      @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css');
+
+      #toolbar {
+        display: flex;
+        width: fit-content;
+        justify-content: space-between;
+        background-color: #f7f7f7;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
       }
 
-      button {
-        font-family: Arial;
+      #toolbar button {
+        background-color: white;
+        border: 0;
+        padding: 5px 20px;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+
+      #toolbar button:hover {
+        background-color: #f7f7f7;
+      }
+
+      #toolbar i {
+        color: #999;
+      }
+
+      #toolbar button:active i {
+        color: #333;
+      }
+
+      #content-area {
+        padding: 10px;
+        min-height: 500px;
+      }
+
+      #content-area h1 {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      #content-area h2 {
+        font-size: 30px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      #content-area h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      #content-area h4 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      #content-area h5 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      #content-area p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      #toolbar #font-size-select {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 5px;
+        cursor: pointer;
         font-size: 14px;
-        margin: 5px;
+        border-radius: 3px;
+      }
+
+      #save-btn {
+        background-color: white;
+        border: 0;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      #save-btn:hover {
+        background-color: #f7f7f7;
+      }
+
+      #save-btn:active {
+        background-color: #ccc;
+      }
+
+      #save-status {
+        display: none;
+        padding: 8px 10px 0;
+        color: black;
+        font-size: 14px;
       }
     </style>
   </head>
   <body>
-    <div contenteditable="true" id="text-input">Type your text here.</div>
-    <button id="bold-button">Bold</button>
-    <button id="italic-button">Italic</button>
-    <button id="underline-button">Underline</button>
-    <button id="undo-button">Undo</button>
-    <button id="redo-button">Redo</button>
-    <script>
-      const textInput = document.getElementById('text-input');
-      const boldButton = document.getElementById('bold-button');
-      const italicButton = document.getElementById('italic-button');
-      const underlineButton = document.getElementById('underline-button');
-      const undoButton = document.getElementById('undo-button');
-      const redoButton = document.getElementById('redo-button');
+    <div id="editor">
+      <div id="toolbar">
+        <button class="bold-btn"><i class="fa fa-bold"></i></button>
+        <button class="italic-btn"><i class="fa fa-italic"></i></button>
+        <button class="underline-btn"><i class="fa fa-underline"></i></button>
+        <button class="link-btn"><i class="fa fa-link"></i></button>
+        <button class="image-btn"><i class="fa fa-image"></i></button>
+        <select id="font-size-select">
+          <option value="H1">H1</option>
+          <option value="H2">H2</option>
+          <option value="H3">H3</option>
+          <option value="H4">H4</option>
+          <option value="H5">H5</option>
+          <option value="P" selected>P</option>
+        </select>
+        <button id="save-btn">Save</button>
+        <div id="save-status">Auto Saved</div>
+      </div>
+      <div id="content-area" contenteditable="true">
+        <p>Type your document here...</p>
+      </div>
+    </div>
 
-      boldButton.addEventListener('click', () => {
+    <script>
+      const boldBtn = document.querySelector('.bold-btn');
+      const italicBtn = document.querySelector('.italic-btn');
+      const underlineBtn = document.querySelector('.underline-btn');
+      const linkBtn = document.querySelector('.link-btn');
+      const imageBtn = document.querySelector('.image-btn');
+      const fontSizeSelect = document.querySelector('#font-size-select');
+      const contentArea = document.querySelector('#content-area');
+
+      boldBtn.addEventListener('click', () => {
         document.execCommand('bold');
       });
 
-      italicButton.addEventListener('click', () => {
+      italicBtn.addEventListener('click', () => {
         document.execCommand('italic');
       });
 
-      underlineButton.addEventListener('click', () => {
+      underlineBtn.addEventListener('click', () => {
         document.execCommand('underline');
       });
 
-      undoButton.addEventListener('click', () => {
-        document.execCommand('undo');
+      linkBtn.addEventListener('click', () => {
+        const link = window.prompt('Enter link:');
+        document.execCommand('createLink', false, link);
       });
 
-      redoButton.addEventListener('click', () => {
-        document.execCommand('redo');
+      imageBtn.addEventListener('click', () => {
+        const image = window.prompt('Enter image URL:');
+        document.execCommand('insertImage', false, image);
       });
 
-      textInput.addEventListener('keydown', (event) => {
-        if (event.key === '/') {
-          console.log('command bar');
+      fontSizeSelect.addEventListener('change', () => {
+        document.execCommand('formatBlock', false, fontSizeSelect.value);
+      });
+
+      function updateFontSizeSelect(event) {
+        let parentElement = event.target;
+        if (parentElement.tagName === 'H1') {
+          fontSizeSelect.value = 'H1';
+        } else if (parentElement.tagName === 'H2') {
+          fontSizeSelect.value = 'H2';
+        } else if (parentElement.tagName === 'H3') {
+          fontSizeSelect.value = 'H3';
+        } else if (parentElement.tagName === 'H4') {
+          fontSizeSelect.value = 'H4';
+        } else if (parentElement.tagName === 'H5') {
+          fontSizeSelect.value = 'H5';
+        } else if (parentElement.tagName === 'P') {
+          fontSizeSelect.value = 'P';
         }
-      });
+      }
+
+      contentArea.addEventListener('click', updateFontSizeSelect);
+
+      const saveBtn = document.querySelector('#save-btn');
+      const saveStatus = document.querySelector('#save-status');
+
+      function saveContent() {
+        let content = contentArea.innerHTML;
+        localStorage.setItem('content', content);
+      }
+
+      function retrieveContent() {
+        let savedContent = localStorage.getItem('content');
+        if (savedContent) {
+          contentArea.innerHTML = savedContent;
+        }
+      }
+
+      function autoSave() {
+        let timer;
+        contentArea.addEventListener('input', () => {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            saveContent();
+            saveStatus.style.display = 'block';
+            setTimeout(() => {
+              saveStatus.style.display = 'none';
+            }, 500);
+          }, 500);
+        });
+      }
+
+      saveBtn.addEventListener('click', saveContent);
+      window.addEventListener('load', retrieveContent);
+      window.addEventListener('load', autoSave);
     </script>
   </body>
 </html>
