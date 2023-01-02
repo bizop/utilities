@@ -2,17 +2,25 @@
 <html>
   <head>
     <title>Word Editor</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,200;0,300;0,400;0,500;0,700;1,300;1,400;1,700&amp;family=Playfair+Display:ital,wght@0,500;0,600&amp;display=swap"
+      rel="stylesheet"
+    />
     <style>
       /* Add fontawesome for icon styles */
       @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css');
 
+      div#editor {
+        height: calc(100vh - 95px);
+      }
       #toolbar {
         display: flex;
         width: fit-content;
         justify-content: space-between;
         background-color: #f7f7f7;
         padding: 10px;
-        border-bottom: 1px solid #ccc;
+        margin-bottom: 5px;
+        border-bottom: 0;
       }
 
       #toolbar button {
@@ -38,47 +46,77 @@
       #content-area {
         padding: 10px;
         min-height: 500px;
+        height: 100%;
+        border: 1px solid lightgray;
+        overflow-y: scroll;
+      }
+
+      #content-area::-webkit-scrollbar {
+        display: none;
+      }
+
+      #content-area:focus {
+        outline: 1px solid #eeeeee;
       }
 
       #content-area h1 {
-        font-size: 36px;
-        font-weight: bold;
+        font-family: 'Playfair Display';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 3rem;
+        line-height: 150%;
         margin: 20px 0;
       }
 
       #content-area h2 {
-        font-size: 30px;
-        font-weight: bold;
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 2rem;
+        line-height: 150%;
         margin: 20px 0;
       }
 
       #content-area h3 {
-        font-size: 24px;
-        font-weight: bold;
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1.75rem;
+        line-height: 150%;
         margin: 20px 0;
       }
 
       #content-area h4 {
-        font-size: 18px;
-        font-weight: bold;
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1.5rem;
+        line-height: 150%;
         margin: 20px 0;
       }
 
       #content-area h5 {
-        font-size: 16px;
-        font-weight: bold;
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1.25rem;
+        line-height: 150%;
         margin: 20px 0;
       }
 
       #content-area p {
-        font-size: 16px;
-        line-height: 1.5;
+        font-family: 'IBM Plex Mono';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 1rem;
+        line-height: 150%;
       }
 
       #toolbar #font-size-select {
         background-color: white;
         border: 1px solid #ccc;
         padding: 5px;
+        margin: 0 5px;
         cursor: pointer;
         font-size: 14px;
         border-radius: 3px;
@@ -100,22 +138,53 @@
         background-color: #ccc;
       }
 
-      #save-status {
+      #command-menu {
         display: none;
-        padding: 8px 10px 0;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
         color: black;
-        font-size: 14px;
+        z-index: 1;
+        text-align: left;
+        padding: 0;
+      }
+
+      #command-menu li {
+        list-style: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      #command-menu li:hover {
+        background-color: #f7f7f7;
+      }
+
+      #content-area:empty::before {
+        content: 'Type or use / to view commands';
+        opacity: 0.5;
+      }
+
+      table {
+        min-width: 300px;
+        width: fit-content;
+      }
+
+      tbody tr:first-child {
+        background: #f2f2f2;
+      }
+
+      td {
+        height: 20px;
+        min-width: 30px;
+        padding: 5px;
+        border: 1px solid #f2f2f2;
+        border-spacing: 0;
       }
     </style>
   </head>
   <body>
     <div id="editor">
       <div id="toolbar">
-        <button class="bold-btn"><i class="fa fa-bold"></i></button>
-        <button class="italic-btn"><i class="fa fa-italic"></i></button>
-        <button class="underline-btn"><i class="fa fa-underline"></i></button>
-        <button class="link-btn"><i class="fa fa-link"></i></button>
-        <button class="image-btn"><i class="fa fa-image"></i></button>
         <select id="font-size-select">
           <option value="H1">H1</option>
           <option value="H2">H2</option>
@@ -124,25 +193,44 @@
           <option value="H5">H5</option>
           <option value="P" selected>P</option>
         </select>
+        <button class="bold-btn"><i class="fa fa-bold"></i></button>
+        <button class="italic-btn"><i class="fa fa-italic"></i></button>
+        <button class="underline-btn"><i class="fa fa-underline"></i></button>
+        <button class="link-btn"><i class="fa fa-link"></i></button>
+        <button class="image-btn"><i class="fa fa-image"></i></button>
+        <button class="table-btn"><i class="fa fa-table"></i></button>
         <button id="save-btn">Save</button>
-        <div id="save-status">Auto Saved</div>
+        <ul id="command-menu">
+          <li>Generate Full Article</li>
+          <li>Regenerate Text</li>
+          <li>Generate Outline</li>
+        </ul>
       </div>
-      <div id="content-area" contenteditable="true">
-        <p>Type your document here...</p>
-      </div>
+      <div id="content-area" contenteditable="true"></div>
     </div>
 
     <script>
       const boldBtn = document.querySelector('.bold-btn');
+      const tableBtn = document.querySelector('.table-btn');
       const italicBtn = document.querySelector('.italic-btn');
       const underlineBtn = document.querySelector('.underline-btn');
       const linkBtn = document.querySelector('.link-btn');
       const imageBtn = document.querySelector('.image-btn');
       const fontSizeSelect = document.querySelector('#font-size-select');
       const contentArea = document.querySelector('#content-area');
+      const tableCommand = document.querySelector('#table-command');
+      const saveBtn = document.querySelector('#save-btn');
+      const saveStatus = document.querySelector('#save-status');
+      const commandMenu = document.querySelector('#command-menu');
 
       boldBtn.addEventListener('click', () => {
         document.execCommand('bold');
+      });
+
+      tableBtn.addEventListener('click', async () => {
+        let table = await insertTable();
+        document.execCommand('insertHTML', false, table);
+        console.log(table);
       });
 
       italicBtn.addEventListener('click', () => {
@@ -167,6 +255,13 @@
         document.execCommand('formatBlock', false, fontSizeSelect.value);
       });
 
+      contentArea.addEventListener('click', updateFontSizeSelect);
+      // tableBtn.addEventListener('click', insertTable);
+      saveBtn.addEventListener('click', saveContent);
+      window.addEventListener('load', retrieveContent);
+      window.addEventListener('load', autoSave);
+      contentArea.addEventListener('keydown', handleCommandInput);
+
       function updateFontSizeSelect(event) {
         let parentElement = event.target;
         if (parentElement.tagName === 'H1') {
@@ -184,14 +279,13 @@
         }
       }
 
-      contentArea.addEventListener('click', updateFontSizeSelect);
-
-      const saveBtn = document.querySelector('#save-btn');
-      const saveStatus = document.querySelector('#save-status');
-
       function saveContent() {
         let content = contentArea.innerHTML;
         localStorage.setItem('content', content);
+        saveBtn.textContent = 'Saved';
+        setTimeout(() => {
+          saveBtn.textContent = 'Save';
+        }, 500);
       }
 
       function retrieveContent() {
@@ -207,17 +301,71 @@
           clearTimeout(timer);
           timer = setTimeout(() => {
             saveContent();
-            saveStatus.style.display = 'block';
-            setTimeout(() => {
-              saveStatus.style.display = 'none';
-            }, 500);
           }, 500);
         });
       }
 
-      saveBtn.addEventListener('click', saveContent);
-      window.addEventListener('load', retrieveContent);
-      window.addEventListener('load', autoSave);
+      let commandActive = false;
+
+      function toggleCommandMenu() {
+        if (commandActive) {
+          commandMenu.style.display = 'none';
+          commandActive = false;
+        } else {
+          commandMenu.style.display = 'block';
+          commandActive = true;
+        }
+      }
+
+      function handleCommandInput(event) {
+        if (event.key === '/') {
+          let selection = window.getSelection();
+          let range = selection.getRangeAt(0);
+          let rangeStart = range.startOffset;
+          let rect = range.getBoundingClientRect();
+          let posTop = range.commonAncestorContainer.offsetTop;
+          let top = rect.top + window.scrollY + rect.height;
+          let left = rect.left + window.scrollX;
+          console.log({ range: range, top: top, left: left, posTop: posTop });
+          if (rangeStart === 0 && posTop < 64) {
+            top = posTop + window.scrollY + rect.height;
+          } else if (rangeStart === 0 && posTop > 64) {
+            top = posTop + window.scrollY + rect.height + 11;
+          } else if (posTop === undefined) {
+            top = top - 6;
+          }
+          if (top > 84) {
+            // let top = posTop + window.scrollY + rect.height;
+            commandMenu.style.top = `${top}px`;
+          } else {
+            commandMenu.style.top = `85px`;
+          }
+          if (left > 17) {
+            commandMenu.style.left = `${left}px`;
+          } else {
+            commandMenu.style.left = `18px`;
+          }
+
+          toggleCommandMenu();
+        } else if (commandActive) {
+          toggleCommandMenu();
+        }
+      }
+
+      function insertTable() {
+        let numRows = prompt('Enter number of rows:');
+        let numCols = prompt('Enter number of columns:');
+        let table = '<table>';
+        for (let i = 0; i < numRows; i++) {
+          table += '<tr>';
+          for (let j = 0; j < numCols; j++) {
+            table += '<td></td>';
+          }
+          table += '</tr>';
+        }
+        table += '</table>';
+        return table;
+      }
     </script>
   </body>
 </html>
