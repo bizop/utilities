@@ -39,11 +39,11 @@
         flex-direction: row;
         flex-wrap: nowrap;
         align-content: flex-end;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: flex-end;
       }
       .month-label {
-        margin: 5px 8.75px;
+        margin: 8px 0;
       }
       .square:last-child {
         margin-left: 780px;
@@ -53,20 +53,7 @@
   </head>
   <body>
     <div id="grid-wrapper">
-      <div class="labels">
-        <div class="month-label">Jan</div>
-        <div class="month-label">Feb</div>
-        <div class="month-label">Mar</div>
-        <div class="month-label">Apr</div>
-        <div class="month-label">May</div>
-        <div class="month-label">Jun</div>
-        <div class="month-label">Jul</div>
-        <div class="month-label">Aug</div>
-        <div class="month-label">Sep</div>
-        <div class="month-label">Oct</div>
-        <div class="month-label">Nov</div>
-        <div class="month-label">Dec</div>
-      </div>
+      <div id="labels" class="labels"></div>
       <div class="grid">
         <!-- Squares go here -->
       </div>
@@ -75,8 +62,18 @@
     <script>
       const data = [];
 
+      let labels = document.getElementById('labels');
       let currentDate = new Date();
       let day = currentDate.getDate();
+      let month = currentDate.getMonth();
+      let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      for (let i = 13; i > 0; i--) {
+        document.getElementById('labels').innerHTML += `<div class="month-label">${months[month]}</div>`;
+        month -= 1;
+        if (month < 0) {
+          month += 12;
+        }
+      }
       let dayCounter = 0;
       while (dayCounter < 365) {
         if (dayCounter % 52 === 0 && dayCounter !== 0) {
@@ -115,7 +112,7 @@
         // Assume that day 1 is January 1st
         const date = new Date(2023, 0, datum.day);
         // Set the title attribute to display the contribution and date of the square in the tooltip
-        square.title = `Contribution: ${datum.contributions}\nDate: ${date.toDateString()}`;
+        square.title = `Contributions: ${datum.contributions}\n${date.toDateString()}`;
         // Append square to grid
         grid.appendChild(square);
       });
