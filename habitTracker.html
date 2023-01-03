@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Styles go here */
+      div#grid-wrapper {
+        width: fit-content;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(52, 11px); /* 52 columns because there are 52 weeks in a year */
+        grid-template-rows: repeat(7, 11px); /* 7 rows because there are 7 days in a week */
+        grid-gap: 4px;
+      }
+      .square {
+        width: 11px;
+        height: 11px;
+        fill: #ebedf0;
+        background: #ebedf0;
+        outline: 1px solid #1b1f230f;
+        outline-offset: -1px;
+        border-radius: 2px;
+      }
+      .lvl-8 {
+        background-color: #216e39;
+      }
+      .lvl-5 {
+        background-color: #30a14e;
+      }
+      .lvl-3 {
+        background-color: #40c463;
+      }
+      .lvl-1 {
+        background-color: #9be9a8;
+      }
+      .labels {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: flex-end;
+        justify-content: space-around;
+        align-items: flex-end;
+      }
+      .month-label {
+        margin: 5px 8.75px;
+      }
+      .square:last-child {
+        margin-left: 780px;
+        margin-top: -15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="grid-wrapper">
+      <div class="labels">
+        <div class="month-label">Jan</div>
+        <div class="month-label">Feb</div>
+        <div class="month-label">Mar</div>
+        <div class="month-label">Apr</div>
+        <div class="month-label">May</div>
+        <div class="month-label">Jun</div>
+        <div class="month-label">Jul</div>
+        <div class="month-label">Aug</div>
+        <div class="month-label">Sep</div>
+        <div class="month-label">Oct</div>
+        <div class="month-label">Nov</div>
+        <div class="month-label">Dec</div>
+      </div>
+      <div class="grid">
+        <!-- Squares go here -->
+      </div>
+    </div>
+
+    <script>
+      const data = [];
+
+      let currentDate = new Date();
+      let day = currentDate.getDate();
+      let dayCounter = 0;
+      while (dayCounter < 365) {
+        if (dayCounter % 52 === 0 && dayCounter !== 0) {
+          day += 363;
+        }
+        if (dayCounter === 364) {
+          // Used to append last day to end of table
+          day -= 357;
+        }
+        let randNum = Math.floor(Math.random() * (9 - 0) + 0);
+        data.push({ day, contributions: randNum, dayCounter });
+        day -= 7;
+        dayCounter++;
+      }
+      // Get reference to grid element
+      const grid = document.querySelector('.grid');
+      // Loop through data and create squares
+      data.forEach((datum) => {
+        // Create square element
+        const square = document.createElement('div');
+        square.classList.add('square');
+
+        // Add background color based on contribution level
+        if (datum.contributions >= 8) {
+          square.classList.add('lvl-8');
+        } else if (datum.contributions >= 5) {
+          square.classList.add('lvl-5');
+        } else if (datum.contributions >= 3) {
+          square.classList.add('lvl-3');
+        } else if (datum.contributions >= 1) {
+          square.classList.add('lvl-1');
+        } else {
+          square.classList.add('none');
+        }
+        // Calculate the date based on the day property of the datum object
+        // Assume that day 1 is January 1st
+        const date = new Date(2023, 0, datum.day);
+        // Set the title attribute to display the contribution and date of the square in the tooltip
+        square.title = `Contribution: ${datum.contributions}\nDate: ${date.toDateString()}`;
+        // Append square to grid
+        grid.appendChild(square);
+      });
+    </script>
+  </body>
+</html>
