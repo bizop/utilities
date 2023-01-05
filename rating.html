@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <title>Rating App</title>
+    <style>
+      .rating {
+        width: 50px;
+        height: 50px;
+        font-size: 50px;
+        border-radius: 400px;
+        cursor: pointer;
+      }
+      .sad {
+        background-color: #f44336;
+      }
+      .neutral {
+        background-color: #ffeb3b;
+      }
+      .happy {
+        background-color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Rate This</h1>
+    <div>
+      <i class="fas fa-smile happy rating" onclick="storeRating('happy')"></i>
+      <i class="fas fa-meh neutral rating" onclick="storeRating('neutral')"></i>
+      <i class="fas fa-frown sad rating" onclick="storeRating('sad')"></i>
+    </div>
+    <div id="ratingDisplay">
+      <!-- This div will display the current rating -->
+    </div>
+    <script>
+      function storeRating(rating) {
+        localStorage.setItem('moodRating', rating);
+        document.getElementById('ratingDisplay').innerHTML += `Your current rating is: ${rating}<br/>`;
+      }
+    </script>
+  </body>
+</html>
